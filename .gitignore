@@ -1,0 +1,5 @@
+_.go
+.DS_Store
+cmd.go
+.vs_code
+go.sum
