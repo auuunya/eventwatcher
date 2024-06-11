@@ -25,6 +25,10 @@ func EvtOpenChannelEnum(session syscall.Handle) (syscall.Handle, error) {
 	return syscall.Handle(handle), nil
 }
 
+func evtClose(handle syscall.Handle) error {
+	return EvtClose(handle)
+}
+
 func EvtClose(handle syscall.Handle) error {
 	ret, _, err := procEvtClose.Call(uintptr(handle))
 	if ret == 0 {

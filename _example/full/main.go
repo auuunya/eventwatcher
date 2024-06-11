@@ -32,7 +32,7 @@ func main() {
 	notify := eventwatcher.NewEventNotifier(ctx)
 	defer notify.Close()
 
-	for _, channel := range channels[:100] {
+	for _, channel := range channels[:] {
 		fmt.Printf("channel: %v\n", channel)
 		err := notify.AddWatcher(channel)
 		if err != nil {
@@ -42,7 +42,7 @@ func main() {
 	go func() {
 		for ch := range notify.EventLogChannel {
 			e := eventwatcher.ParseEventLogData(ch)
-			fmt.Printf("e: %+v\n", e)
+			fmt.Printf("event log changed: %#v\n", e.RecordNumber)
 		}
 	}()
 

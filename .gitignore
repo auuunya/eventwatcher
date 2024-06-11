@@ -1,4 +1,4 @@
-_.go
+_.*
 .DS_Store
 cmd.go
 .vs_code
