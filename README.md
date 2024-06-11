@@ -17,6 +17,7 @@ go get github.com/auuunya/eventwatcher
 ```
 
 #### Example
+
 ```golang
 package main
 
@@ -51,6 +52,11 @@ func main() {
 	fmt.Printf("Shutting down\n")
 }
 
+```
+
+#### Windows event shell
+```Powershell
+Write-EventLog -LogName "Application" -Source "TestSource" -EventID 1000 -EntryType Information -Message "Application Test Info"
 ```
 
 #### Contribution
