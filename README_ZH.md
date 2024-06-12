@@ -28,7 +28,7 @@ import (
 )
 
 func main() {
-	ctx := context.TODO()
+	ctx := context.Background()
 	notify := eventwatcher.NewEventNotifier(ctx)
 	defer notify.Close()
 
