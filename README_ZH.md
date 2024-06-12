@@ -54,9 +54,13 @@ func main() {
 
 ```
 
-#### Windows 事件日志命令
+#### Windows powershell add event
 ```Powershell
 Write-EventLog -LogName "Application" -Source "TestSource" -EventID 1000 -EntryType Information -Message "Application Test Info"
+```
+#### Windows cmd add event
+```cmd
+eventcreate /ID 10001 /L APPLICATION /T INFORMATION  /SO MYEVENTSOURCE /D "Test Application Infomation"
 ```
 
 #### 贡献

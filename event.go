@@ -4,6 +4,8 @@ import (
 	"errors"
 	"syscall"
 	"unsafe"
+
+	"golang.org/x/sys/windows"
 )
 
 var (
@@ -14,6 +16,9 @@ var (
 	procCloseEventLog              = modadvapi32.MustFindProc("CloseEventLog")
 	procNotifyChangeEventLog       = modadvapi32.MustFindProc("NotifyChangeEventLog")
 	procGetNumberOfEventLogRecords = modadvapi32.MustFindProc("GetNumberOfEventLogRecords")
+	procRegisterEventSourceW       = modadvapi32.MustFindProc("RegisterEventSourceW")
+	procReportEventW               = modadvapi32.MustFindProc("ReportEventW")
+	procDeregisterEventSource      = modadvapi32.MustFindProc("DeregisterEventSource")
 	// https://learn.microsoft.com/zh-cn/windows/win32/api/synchapi/
 	modkernel32                = syscall.MustLoadDLL("Kernel32.dll")
 	procCreateEvent            = modkernel32.MustFindProc("CreateEventW")
@@ -206,6 +211,69 @@ func CloseHandle(handle syscall.Handle) error {
 	)
 	if ret == 0 {
 		return errors.New("unable to close handle: " + err.Error())
+	}
+	return nil
+}
+
+func registerEventSource(uncServerName, sourceName *uint16) (handle syscall.Handle, err error) {
+	return RegisterEventSource(uncServerName, sourceName)
+}
+
+func RegisterEventSource(uncServerName, sourceName *uint16) (handle syscall.Handle, err error) {
+	r0, _, e1 := procRegisterEventSourceW.Call(
+		uintptr(unsafe.Pointer(uncServerName)),
+		uintptr(unsafe.Pointer(sourceName)),
+	)
+	handle = syscall.Handle(r0)
+	if handle == 0 {
+		err = e1
+	}
+	return
+}
+
+func reportEvent(log syscall.Handle, etype uint16, category uint16, eventID uint32, userSid *windows.SID, strings []string, binaryData []byte) error {
+	return ReportEvent(log, etype, category, eventID, userSid, strings, binaryData)
+}
+
+func ReportEvent(log syscall.Handle, etype uint16, category uint16, eventID uint32, userSid *windows.SID, strings []string, binaryData []byte) error {
+	var pstrings **uint16
+	if len(strings) > 0 {
+		var strs []uintptr
+		for _, s := range strings {
+			strs = append(strs, uintptr(unsafe.Pointer(windows.StringToUTF16Ptr(s))))
+		}
+		pstrings = &(*[1 << 30]*uint16)(unsafe.Pointer(&strs[0]))[0]
+	}
+	var binaryDataPtr *byte
+	if len(binaryData) > 0 {
+		binaryDataPtr = &binaryData[0]
+	}
+	r1, _, e1 := procReportEventW.Call(
+		uintptr(log),
+		uintptr(etype),
+		uintptr(category),
+		uintptr(eventID),
+		uintptr(unsafe.Pointer(userSid)),
+		uintptr(len(strings)),
+		uintptr(len(binaryData)),
+		uintptr(unsafe.Pointer(pstrings)),
+		uintptr(unsafe.Pointer(binaryDataPtr)),
+	)
+	if r1 == 0 {
+		return e1
+	}
+	return nil
+}
+func deregisterEventSource(log syscall.Handle) error {
+	return DeregisterEventSource(log)
+}
+
+func DeregisterEventSource(log syscall.Handle) error {
+	r1, _, e1 := procDeregisterEventSource.Call(
+		uintptr(log),
+	)
+	if r1 == 0 {
+		return e1
 	}
 	return nil
 }
