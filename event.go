@@ -8,8 +8,7 @@ import (
 
 var (
 	// https://learn.microsoft.com/zh-cn/windows/win32/api/winbase/
-	modadvapi32 = syscall.MustLoadDLL("advapi32.dll")
-
+	modadvapi32                    = syscall.MustLoadDLL("advapi32.dll")
 	procOpenEventLog               = modadvapi32.MustFindProc("OpenEventLogW")
 	procReadEventLog               = modadvapi32.MustFindProc("ReadEventLogW")
 	procCloseEventLog              = modadvapi32.MustFindProc("CloseEventLog")

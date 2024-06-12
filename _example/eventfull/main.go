@@ -3,9 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
-	"net/http"
-	_ "net/http/pprof"
 	"os"
 	"os/signal"
 	"syscall"
@@ -14,9 +11,6 @@ import (
 )
 
 func main() {
-	go func() {
-		log.Println(http.ListenAndServe("localhost:6060", nil))
-	}()
 	session, err := eventwatcher.EvtOpenChannelEnum(0)
 	if err != nil {
 		fmt.Printf("error: %#v\n", err)
@@ -33,7 +27,6 @@ func main() {
 	defer notify.Close()
 
 	for _, channel := range channels[:] {
-		fmt.Printf("channel: %v\n", channel)
 		err := notify.AddWatcher(channel)
 		if err != nil {
 			continue

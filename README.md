@@ -41,15 +41,14 @@ func main() {
 
 	go func() {
 		for ch := range notify.EventLogChannel {
-			e := eventwatcher.ParseEventLogData(ch)
-			fmt.Printf("e: %+v\n", e)
+			val := eventwatcher.ParseEventLogData(ch)
+			fmt.Printf("val: %v\n",val)
 		}
 	}()
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
-	fmt.Printf("Shutting down\n")
 }
 
 ```
