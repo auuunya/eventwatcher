@@ -1,0 +1,6 @@
+_.*
+.DS_Store
+cmd.go
+.vs_code
+go.sum
+*.log
