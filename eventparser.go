@@ -2,6 +2,7 @@ package eventwatcher
 
 import (
 	"fmt"
+	"syscall"
 	"unsafe"
 
 	"golang.org/x/sys/windows"
@@ -49,6 +50,11 @@ func ParserEventLogData(buf []byte) (*EventLogRecord, error) {
 	}
 	record := (*EventLogRecord)(unsafe.Pointer(&buf[0]))
 	return record, nil
+}
+
+func FormatContent(buf []byte) string {
+	r := (*EventLogRecord)(unsafe.Pointer(&buf[0]))
+	return syscall.UTF16ToString((*[1 << 10]uint16)(unsafe.Pointer(uintptr(unsafe.Pointer(r)) + uintptr(r.StringOffset)))[:])
 }
 
 func FormatMessage(errorCode uint32) string {

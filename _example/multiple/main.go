@@ -18,7 +18,6 @@ func main() {
 
 	channels := []string{"Application", "System", "Microsoft-Windows-Kernel-Dump/Operational"}
 	for _, channel := range channels {
-		fmt.Printf("channel: %v\n", channel)
 		err := notify.AddWatcher(channel)
 		if err != nil {
 			continue
@@ -27,8 +26,8 @@ func main() {
 
 	go func() {
 		for ch := range notify.EventLogChannel {
-			e := eventwatcher.ParseEventLogData(ch)
-			fmt.Printf("e: %+v\n", e)
+			record := eventwatcher.ParseEventLogData(ch.Buffer)
+			fmt.Printf("name: %s, handle: %v, record: %+v\n", ch.Name, ch.Handle, record)
 		}
 	}()
 

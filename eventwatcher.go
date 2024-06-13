@@ -14,12 +14,12 @@ type EventWatcher struct {
 	cancelHandle syscall.Handle
 	ctx          context.Context
 	cancel       context.CancelFunc
-	eventChan    chan []byte
+	eventChan    chan *EventEntry
 	stopCh       chan struct{}
 }
 
 // NewEventWatcher creates a new EventWatcher instance.
-func NewEventWatcher(ctx context.Context, name string, eventChan chan []byte) *EventWatcher {
+func NewEventWatcher(ctx context.Context, name string, eventChan chan *EventEntry) *EventWatcher {
 	ctx, cancel := context.WithCancel(ctx)
 	return &EventWatcher{
 		Name:      name,
@@ -117,7 +117,11 @@ func (ew *EventWatcher) Listen() {
 				if err != nil {
 					return
 				}
-				ew.eventChan <- buf
+				ew.eventChan <- &EventEntry{
+					Name:   ew.Name,
+					Handle: ew.handle,
+					Buffer: buf,
+				}
 
 				if err := resetEvent(ew.eventHandle); err != nil {
 					return

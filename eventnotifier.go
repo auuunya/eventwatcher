@@ -5,11 +5,18 @@ import (
 	"errors"
 	"fmt"
 	"sync"
+	"syscall"
 )
+
+type EventEntry struct {
+	Name   string         `json:"name"`
+	Handle syscall.Handle `json:"handle"`
+	Buffer []byte         `json:"buffer"`
+}
 
 // EventNotifier manages a collection of EventWatchers.
 type EventNotifier struct {
-	EventLogChannel chan []byte
+	EventLogChannel chan *EventEntry
 	watchers        map[string]*EventWatcher
 	ctx             context.Context
 	wg              sync.WaitGroup
@@ -21,7 +28,7 @@ func NewEventNotifier(ctx context.Context) *EventNotifier {
 	return &EventNotifier{
 		ctx:             ctx,
 		watchers:        make(map[string]*EventWatcher),
-		EventLogChannel: make(chan []byte),
+		EventLogChannel: make(chan *EventEntry),
 	}
 }
 

@@ -23,11 +23,10 @@ package main
 
 import (
 	"github.com/auuunya/eventwatcher"
-    ...
 )
 
 func main() {
-	ctx := context.TODO()
+	ctx := context.Background()
 	notify := eventwatcher.NewEventNotifier(ctx)
 	defer notify.Close()
 
@@ -41,8 +40,7 @@ func main() {
 
 	go func() {
 		for ch := range notify.EventLogChannel {
-			val := eventwatcher.ParseEventLogData(ch)
-			fmt.Printf("val: %v\n",val)
+			fmt.Printf("event entry: %v\n", ch)
 		}
 	}()
 

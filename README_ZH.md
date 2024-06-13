@@ -24,7 +24,6 @@ package main
 
 import (
 	"github.com/auuunya/eventwatcher"
-    ...
 )
 
 func main() {
@@ -42,8 +41,7 @@ func main() {
 
 	go func() {
 		for ch := range notify.EventLogChannel {
-			val := eventwatcher.ParseEventLogData(ch)
-			fmt.Printf("val: %v\n", val)
+			fmt.Printf("event entry: %v\n", ch)
 		}
 	}()
 
