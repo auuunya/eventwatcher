@@ -5,7 +5,8 @@ import (
 )
 
 const (
-	InvalidHandle = syscall.Handle(0)
+	// Use uintptr for cross-platform handle representation.
+	InvalidHandle = uintptr(0)
 
 	ERROR_HANDLE_EOF          syscall.Errno = 38
 	ERROR_INSUFFICIENT_BUFFER syscall.Errno = 122

@@ -5,13 +5,12 @@ import (
 	"errors"
 	"fmt"
 	"sync"
-	"syscall"
 )
 
 type EventEntry struct {
-	Name   string         `json:"name"`
-	Handle syscall.Handle `json:"handle"`
-	Buffer []byte         `json:"buffer"`
+	Name   string  `json:"name"`
+	Handle uintptr `json:"handle"`
+	Buffer []byte  `json:"buffer"`
 }
 
 // EventNotifier manages a collection of EventWatchers.

@@ -1,5 +1,5 @@
 ### EventWatcher
-[![Go Reference](https://pkg.go.dev/badge/github.com/auuunya/eventwatcher.svg)](https://pkg.go.dev/github.com/auuunya/eventwatcher)
+[![Go Reference](https://pkg.go.dev/badge/github.com/auuunya/eventwatcher.svg)](https://pkg.go.dev/github.com/auuunya/eventwatcher) [![CI](https://github.com/auuunya/eventwatcher/actions/workflows/ci.yml/badge.svg)](https://github.com/auuunya/eventwatcher/actions/workflows/ci.yml)
 #### Overview
 EventWatcher is an open-source library designed for monitoring Windows Event Logs in real-time. It provides a robust and efficient solution for tracking and reacting to system events, application logs, and other important event sources. This library is particularly useful for developers and system administrators who need to monitor event logs for debugging, auditing, and system management purposes.
 
@@ -60,6 +60,16 @@ Write-EventLog -LogName "Application" -Source "TestSource" -EventID 1 -EntryType
 ```cmd
 eventcreate /ID 1 /L APPLICATION /T INFORMATION  /SO MYEVENTSOURCE /D "Test Application Infomation"
 ```
+
+#### Cross-platform support
+- **Windows:** Uses native Windows Event Log APIs (original behavior). Windows-specific tests and implementations are build-tagged with `//go:build windows`.
+- **macOS / Linux:** A lightweight file-watching implementation using `fsnotify` is provided for Unix-like systems. On these platforms, call `AddWatcher(path)` where `path` is a file path (writing to the file will emit an event).
+- **Notes:** On non-Windows platforms, Windows-specific APIs return not-implemented errors; use the Unix watcher for most cross-platform needs.
+
+#### Running tests & profiling
+- Run all tests: `go test ./...`
+- Run Unix watcher test (macOS/Linux): `go test -run TestEventWatcherUnixFile -v`
+- Run memory check: `go test -run TestMemSpike -v` (this logs runtime.MemStats before/after watcher start).
 
 #### Contribution
 Contributions are welcome! Feel free to open issues or submit pull requests on the GitHub repository.
