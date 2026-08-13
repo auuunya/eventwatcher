@@ -1,3 +1,5 @@
+
+
 ### EventWatcher
 [![Go Reference](https://pkg.go.dev/badge/github.com/auuunya/eventwatcher.svg)](https://pkg.go.dev/github.com/auuunya/eventwatcher) [![CI](https://github.com/auuunya/eventwatcher/actions/workflows/ci.yml/badge.svg)](https://github.com/auuunya/eventwatcher/actions/workflows/ci.yml)
 #### Overview
@@ -23,6 +25,12 @@ go get github.com/auuunya/eventwatcher
 package main
 
 import (
+	"context"
+	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
+
 	"github.com/auuunya/eventwatcher"
 )
 
